@@ -1,0 +1,25 @@
+version: "3"
+services:
+    maven:
+        image: node:alpine
+        build:
+          context: ./maven
+          dockerfile: Dockerfile.maven
+        container_name: maven
+        volumes:
+            - ${PWD}:/usr/src/mymaven/
+        working_dir: /usr/src/mymaven/
+        command: mvn verify -f boxfuse-sample-java-war-hello/pom.xml
+        links:
+            - tomcat
+
+    tomcat:
+        build:
+          context: . /tomcat
+          dockerfile: Dockerfile.tomcat
+        container_name: tomcat
+        volumes:
+            - ${PWD}/boxfuse-sample-java-war-hello/target:/usr/local/tomcat webapps/
+        ports:
+            - "8080:8080"
+        restart: on-failure:3
