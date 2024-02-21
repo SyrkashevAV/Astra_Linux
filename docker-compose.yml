@@ -7,14 +7,16 @@ services:
       dockerfile: Dockerfile.maven
     container_name: maven
     volumes:
-      - "~/docker-compose_boxfuse/:/boxfuse/boxfuse-sample-java-war-hello/target/"
+      - web_data:/boxfuse/boxfuse-sample-java-war-hello/target/
   tomcat:
     build:
       context: .
       dockerfile: Dockerfile.tomcat
     container_name: tomcat
     volumes:
-      - "~/docker-compose_boxfuse/:/usr/local/tomcat/webapps/"
+      - web_data:/usr/local/tomcat/webapps/
     ports:
       - "8080:8080"
     restart: on-failure:3
+volumes:
+  web_data:
