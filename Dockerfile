@@ -1,7 +1,4 @@
-FROM ubuntu:18.04
-RUN apt update -y
-RUN apt install -y git maven wget
-WORKDIR /boxfuse
-RUN git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
-WORKDIR /boxfuse/boxfuse-sample-java-war-hello
-RUN mvn package
+FROM esme518/docker-altserver
+RUN apt update -y && apt install -y git rpm alien
+#RUN rpm -i oev-2024.2-alt1.x86_64.rpm
+RUN alien oev-2024.2-alt1.x86_64.rpm && dpkg -i oev_2024.2-1_amd64.deb

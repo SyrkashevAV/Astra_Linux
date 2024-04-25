@@ -1,22 +1,31 @@
 ---
-version: "3"
+version: '3'
 services:
-  maven:
+  config:
+    image: esme518/docker-altserver
+    volumes:
+      - ./data:/altserver
+      - ./lockdown:/var/lib/lockdown
+      - /var/run:/var/run
+      - /dev/bus/usb:/dev/bus/usb
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    network_mode: host
+    stdin_open: true
+    tty: true
+    privileged: true
+    profiles: ["config"]
+    command: usbmuxd -f
+
+  altserver:
     build:
       context: .
-      dockerfile: Dockerfile.maven
-    container_name: maven
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: altserver
     volumes:
-      - web_data:/boxfuse/boxfuse-sample-java-war-hello/target/
-  tomcat:
-    build:
-      context: .
-      dockerfile: Dockerfile.tomcat
-    container_name: tomcat
-    volumes:
-      - web_data:/usr/local/tomcat/webapps/
-    ports:
-      - "8080:8080"
-    restart: on-failure:3
-volumes:
-  web_data:
+      - ./data:/altserver
+      - ./lockdown:/var/lib/lockdown
+      - /var/run:/var/run
+    network_mode: host
+    stdin_open: true
+    tty: true
