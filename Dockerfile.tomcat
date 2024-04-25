@@ -1,2 +1,0 @@
-FROM tomcat:7.0.92-jre8-alpine
-CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
