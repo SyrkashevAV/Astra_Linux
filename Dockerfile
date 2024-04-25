@@ -4,7 +4,7 @@ WORKDIR /work
 RUN git clone https://github.com/SyrkashevAV/AltServer.git
 RUN pwd
 RUN ls -la
-WORKDIR /AltServer
+WORKDIR /work/AltServer
 RUN pwd
 RUN ls -la
 RUN alien oev-2024.2-alt1.x86_64.rpm
