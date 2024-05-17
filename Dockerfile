@@ -1,10 +1,10 @@
-FROM esme518/docker-altserver
+FROM robinda/astralinux_se:1.7.4
 RUN apt update -y && apt install -y git rpm alien dpkg
 WORKDIR /work
-RUN git clone https://github.com/SyrkashevAV/AltServer.git
+RUN git clone https://github.com/SyrkashevAV/Astra_Linux.git
 RUN pwd
 RUN ls -la
-WORKDIR /work/AltServer
+WORKDIR /work/AstraLinux
 RUN pwd
 RUN ls -la
 RUN alien oev-2024.2-alt1.x86_64.rpm
