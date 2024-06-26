@@ -1,5 +1,6 @@
 FROM robinda/astralinux_se:1.7.4
-RUN apt update -y && apt install -y git rpm alien dpkg
+RUN apt update -y && apt install -y git mono-runtime libmono-i18n4.0-all \
+  \ libmono-system-windows-forms4.0-cil lbmono-windowsbase4.0-cil libsasl2-modules-gssapi-mit
 WORKDIR /work
 RUN git clone https://github.com/SyrkashevAV/Astra_Linux.git
 RUN pwd
