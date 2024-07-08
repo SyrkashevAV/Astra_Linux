@@ -1,0 +1,44 @@
+    - name: add docker file
+      copy:
+        src: Dockerfile
+        dest: /tmp
+    - name: add parceUser1Xauth.txt
+      become: true
+      shell:
+        cmd: xauth list | tail -n 1 > /var/lib/docker/volumes/volume/_data/.parceUser1Xauth.txt
+    - name: add echoUser1DISPLAY.txt
+      become: true
+      shell:
+        cmd: echo $DISPLAY > /var/lib/docker/volumes/volume/_data/.echoUser1DISPLAY.txt
+    - name: install packages
+      apt:
+        pkg:
+          - docker.io
+          - python3-pip
+        update_cache: yes
+        state: present
+    - name: pip install docker
+      pip:
+        name: docker
+    - name: build container image
+      docker_image:
+        name: kbrn
+        path: /tmp
+    - name: create a volume volume for the xath
+      docker_volume:
+        name: volume
+    - name: create a volume cfg for the xath
+      docker_volume:
+        name: cfg
+    - name: create a volume stg for the xath
+      docker_volume:
+        name: sfg
+    - name: create a volume log for the xath
+      docker_volume:
+        name: log
+    - name: create a volume exg for the xath
+      docker_volume:
+        name: exg
+
+
+                                                  
