@@ -1,0 +1,96 @@
+#FROM navrocky/astra_linux_se_smolensk:1.7.5-slim
+#FROM robinda/astralinux_se:1.7.4
+ 
+
+
+
+FROM alexanderzorg/astralinux:se
+ENV TZ=Europe/Moscow DISPLAY=:0
+
+RUN export PATH="$PATH:/sbin" && export PATH="$PATH:/usr/sbin" && export PATH="$PATH:/usr/local/sbin" && apt update \ 
+ && apt install -y git dpkg xauth mc \
+ && apt install -y mono-complete mono-runtime libmono-i18n4.0-all \ 
+ && apt install -y libmono-system-windows-forms4.0-cil libmono-windowsbase4.0-cil libsasl2-modules-gssapi-mit \
+ && apt install -y libgtk2.0-0 libgtk-3-0 libpcsclite1 libccid pcscd libcurl4 xauth 
+
+RUN mkdir /opt/inst \
+ && touch /opt/inst/start.sh \
+ && touch /root/.Xauthority \
+ && echo '#!/bin/bash' > /opt/inst/start.sh \
+ && echo 'xauth add `cat /tmp/.parceUser1Xauth.txt`' >> /opt/inst/start.sh \
+ && echo 'touch ~/.Xauthority' >> /opt/inst/start.sh \
+ && echo 'export DISPLAY=:0' >> /opt/inst/start.sh \
+ && echo 'touch /home/kbradm/.Xauthority' >> /opt/inst/start.sh \
+# && echo 'cat ~/.Xauthority | sudo -u kbradm -i tee .Xauthority > /dev/null' >> /opt/inst/start.sh \
+# && echo 'xauth generate :0 .trusted' >> /opt/inst/start.sh \
+# && echo 'xauth add ${HOST}:0 . $(xxd -l 16 -p /dev/urandom)' >> /opt/inst/start.sh \
+ && echo 'rm -Rf ~/.config/.mono' >> /opt/inst/start.sh \
+ && echo 'setfacl -m group:kbradm:rwx /tmp' >> /opt/inst/start.sh \
+ && echo 'setfacl -m group:kbradm:rwx /opt/oev/Cfg' >> /opt/inst/start.sh \
+ && echo 'setfacl -m group:kbradm:rwx /opt/oev/Log' >> /opt/inst/start.sh \
+ && echo 'id' >> /opt/inst/start.sh \
+ && echo 'chattr -i /opt/oev/Stg' >> /opt/inst/start.sh \
+ && echo 'setfacl -m group:kbradm:rwx /opt/oev/Exg' >> /opt/inst/start.sh \
+#&& echo 'setfacl -m other:x /opt/oev/Exg' >> /opt/inst/start.sh \
+ && echo 'chown kbradm /opt/oev/Cfg' >> /opt/inst/start.sh \
+ && echo 'chown kbradm /opt/oev/Log' >> /opt/inst/start.sh \
+ && echo 'chown kbradm /opt/oev/Stg' >> /opt/inst/start.sh \
+ && echo 'chown kbradm /opt/oev/Exg' >> /opt/inst/start.sh \
+ && echo 'chgrp kbradm /opt/oev/Cfg' >> /opt/inst/start.sh \
+ && echo 'chgrp kbradm /opt/oev/Log' >> /opt/inst/start.sh \
+ && echo 'chgrp kbradm /opt/oev/Stg' >> /opt/inst/start.sh \
+ && echo 'chgrp kbradm /opt/oev/Exg' >> /opt/inst/start.sh \
+ && echo 'setfacl -m "u:kbradm:rwx" /opt/oev/Cfg' >> /opt/inst/start.sh \
+ && echo 'setfacl -m "u:kbradm:rwx" /opt/oev/Log' >> /opt/inst/start.sh \
+ && echo 'setfacl -m "u:kbradm:rwx" /opt/oev/Stg' >> /opt/inst/start.sh \
+ && echo 'setfacl -m "u:kbradm:rwx" /opt/oev/Exg' >> /opt/inst/start.sh \
+#&& echo 'setfacl -m "other:x" /opt/oev/Exg' >> /opt/inst/start.sh \
+ && echo 'cd /' >> /opt/inst/start.sh \
+ && echo '/usr/bin/mono /opt/oev/Bin/oev.exe' >> /opt/inst/start.sh \
+ && chmod +x /opt/inst/start.sh
+
+WORKDIR /work
+RUN git clone https://github.com/SyrkashevAV/Astra_Linux.git
+
+WORKDIR /work/Astra_Linux/Scad
+RUN dpkg -i spki-6.0.480.0-0.amd64.deb \
+ && dpkg -i ssdk-6.0.480.0-0.amd64.deb
+
+#RUN dpkg -i spki-6.0.464.0-0.amd64.deb \
+# && dpkg -i ssdk-6.0.464.0-0.amd64.deb \ 
+# && dpkg -i stsocs-6.0.464.0-0.amd64.deb
+
+WORKDIR /work/Astra_Linux/Kbrn
+RUN dpkg -i oev-2024.2-astra.amd64.deb \
+ && id > /opt/inst/id1.txt \
+ && chown kbradm /opt/oev/Cfg \
+ && chown kbradm /opt/oev/Log \
+ && chown kbradm /opt/oev/Stg \
+ && chown kbradm /opt/oev/Exg \
+ && chgrp kbradm /opt/oev/Cfg \
+ && chgrp kbradm /opt/oev/Log \
+ && chgrp kbradm /opt/oev/Stg \
+ && chgrp kbradm /opt/oev/Exg \ 
+ && setfacl -m "g:kbradm:rwx" /opt/oev/Cfg \
+ && setfacl -m "g:kbradm:rwx" /opt/oev/Log \
+ && setfacl -m "g:kbradm:rwx" /opt/oev/Stg \
+ && setfacl -m "g:kbradm:rwx" /opt/oev/Exg \
+ && setfacl -m "other:x" /opt/oev/Exg
+
+
+#&& setfacl -R -m "g:kbradm:rwx" /opt/oev
+
+#VOLUME /tmp
+
+WORKDIR /
+
+RUN id > /opt/inst/id2.txt
+
+RUN pwd
+
+RUN ls -la /opt/oev
+
+#CMD ["./opt/inst/start.sh"]
+#CMD ["su", "-", "kbradm", "-c", "/opt/inst/start.sh"]
+#CMD ["su", "-", "kbradm", "-c", "/bin/bash"]
+

@@ -1,0 +1,18 @@
+FROM alexanderzorg/astralinux:se
+ENV TZ=Europe/Moscow DISPLAY=:0
+
+RUN export PATH="$PATH:/sbin" && export PATH="$PATH:/usr/sbin" && export PATH="$PATH:/usr/local/sbin" && apt update \ 
+ && apt install -y git dpkg xauth mc \
+ && apt install -y mono-complete mono-runtime libmono-i18n4.0-all \ 
+ && apt install -y libmono-system-windows-forms4.0-cil libmono-windowsbase4.0-cil libsasl2-modules-gssapi-mit \
+ && apt install -y libgtk2.0-0 libgtk-3-0 libpcsclite1 libccid pcscd libcurl4 xauth 
+
+WORKDIR /work
+RUN git clone https://github.com/SyrkashevAV/Astra_Linux.git
+
+WORKDIR /work/Astra_Linux/Scad
+RUN dpkg -i spki-6.0.480.0-0.amd64.deb && dpkg -i ssdk-6.0.480.0-0.amd64.deb
+
+
+WORKDIR /work/Astra_Linux/Kbrn
+RUN dpkg -i oev-2024.2-astra.amd64.deb
